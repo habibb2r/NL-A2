@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { Address, FullName, User } from './user.interface';
 import bcrypt from 'bcrypt'
 
+
 const userFullNameSchema = new Schema<FullName>({
   firstName: {
     type: String,
@@ -44,9 +45,8 @@ const userSchema = new Schema<User>({
   age: { type: Number, required: [true, 'Age is required'] },
   email: { type: String, required: [true, 'Email is required'], unique: true },
   isActive: {
-    type: String,
-    enum: ['active', 'inactive'],
-    default: 'active',
+    type: Boolean,
+    default: true,
   },
   hobbies: { type: [String], required: [true, 'Hobbies are required'] },
   address: { type: addressSchema, required: [true, 'Address is required'] },
