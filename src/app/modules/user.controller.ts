@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { userValidation } from './user.validation';
+import { orderValidation, userValidation } from './user.validation';
 
 const userCreate = async (req: Request, res: Response) => {
   try {
@@ -40,7 +40,11 @@ const allUsers = async (req: Request, res: Response) => {
       data: filteredUsers,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: err,
+    });
   }
 };
 
@@ -110,8 +114,8 @@ const updateOneUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
-    const userId = parseInt(req.params.userId)
-    const user = await UserService.singleUserFromDB(userId)
+    const userId = parseInt(req.params.userId);
+    const user = await UserService.singleUserFromDB(userId);
 
     if (!user)
       return res.status(404).json({
@@ -121,27 +125,60 @@ const deleteUser = async (req: Request, res: Response) => {
           code: 404,
           description: 'User not found!',
         },
-      })
+      });
 
-    await UserService.deleteUser(userId)
+    await UserService.deleteUser(userId);
     res.status(200).json({
       success: true,
       message: 'User deleted successfully',
       data: null,
-    })
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: 'Something went wrong',
       error: error,
-    })
+    });
   }
 };
+
+const doOrder = async (req: Request, res: Response) => {
+  try {
+    const userId = parseInt(req.params.userId)
+    const orderInfo = req.body
+    const validUserData = orderValidation.parse(orderInfo)
+    const user = await UserService.singleUserFromDB(userId)
+
+    if (!user)
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found',
+        },
+      })
+
+    await UserService.doOrder(userId, validUserData)
+    res.status(201).json({
+      success: true,
+      message: 'Order added successfully',
+      data: null,
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong!',
+      error: error,
+    })
+  }
+}
 
 export const UserController = {
   userCreate,
   allUsers,
   singleUser,
   updateOneUser,
-  deleteUser
+  deleteUser,
+  doOrder
 };

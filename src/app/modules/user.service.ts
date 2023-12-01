@@ -1,4 +1,4 @@
-import { User } from './user.interface';
+import { Orders, User } from './user.interface';
 import { UserModel } from './user.model';
 
 const createUserInDB = async (user: User) => {
@@ -27,11 +27,18 @@ const updateOneUser = async (userId: number, updateData: Partial<User>) => {
 const deleteUser = async (userId: number) => {
   const result = await UserModel.deleteOne({ userId })
   return result
-}
+};
+
+const doOrder = async (userId: number, info: Orders) => {
+  const result = await UserModel.findOneAndUpdate({ userId }, { $push: { orders: info } },)
+  return result
+};
+
 export const UserService = {
   createUserInDB,
   allUsersFromDB,
   singleUserFromDB,
   updateOneUser,
-  deleteUser
+  deleteUser,
+  doOrder
 };
