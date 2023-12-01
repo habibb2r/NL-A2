@@ -10,7 +10,13 @@ const allUsersFromDB = async () => {
   const result = await UserModel.find();
   return result;
 };
+
+const singleUserFromDB = async (userId: number) => {
+  const result = await UserModel.findOne({ userId })
+  return result
+}
 export const UserService = {
   createUserInDB,
   allUsersFromDB,
+  singleUserFromDB
 };
