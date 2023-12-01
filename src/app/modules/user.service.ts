@@ -22,10 +22,16 @@ const updateOneUser = async (userId: number, updateData: Partial<User>) => {
     runValidators: true,
   })
   return result
+};
+
+const deleteUser = async (userId: number) => {
+  const result = await UserModel.deleteOne({ userId })
+  return result
 }
 export const UserService = {
   createUserInDB,
   allUsersFromDB,
   singleUserFromDB,
-  updateOneUser
+  updateOneUser,
+  deleteUser
 };
