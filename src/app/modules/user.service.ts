@@ -12,26 +12,34 @@ const allUsersFromDB = async () => {
 };
 
 const singleUserFromDB = async (userId: number) => {
-  const result = await UserModel.findOne({ userId })
-  return result
+  const result = await UserModel.findOne({ userId });
+  return result;
 };
 
 const updateOneUser = async (userId: number, updateData: Partial<User>) => {
   const result = await UserModel.findOneAndUpdate({ userId }, updateData, {
     new: true,
     runValidators: true,
-  })
-  return result
+  });
+  return result;
 };
 
 const deleteUser = async (userId: number) => {
-  const result = await UserModel.deleteOne({ userId })
-  return result
+  const result = await UserModel.deleteOne({ userId });
+  return result;
 };
 
 const doOrder = async (userId: number, info: Orders) => {
-  const result = await UserModel.findOneAndUpdate({ userId }, { $push: { orders: info } },)
-  return result
+  const result = await UserModel.findOneAndUpdate(
+    { userId },
+    { $push: { orders: info } },
+  );
+  return result;
+};
+
+const getOrders = async (userId: number) => {
+  const result = await UserModel.findOne({ userId }).select({ orders: 1 });
+  return result;
 };
 
 export const UserService = {
@@ -40,5 +48,6 @@ export const UserService = {
   singleUserFromDB,
   updateOneUser,
   deleteUser,
-  doOrder
+  doOrder,
+  getOrders,
 };
