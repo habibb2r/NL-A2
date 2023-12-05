@@ -38,7 +38,7 @@ const doOrder = async (userId: number, info: Orders) => {
 };
 
 const getOrders = async (userId: number) => {
-  const result = await UserModel.findOne({ userId }).select({ orders: 1 });
+  const result = await UserModel.findOne({ userId }).select({  "orders._id": 0});
   return result;
 };
 

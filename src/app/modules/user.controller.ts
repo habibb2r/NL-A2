@@ -1,18 +1,29 @@
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { orderValidation, userValidation } from './user.validation';
+import { getUserInfo, FullName } from './user.interface';
 
 const userCreate = async (req: Request, res: Response) => {
   try {
-    const { user: UserData } = req.body;
+    const  UserData  = req.body;
     // const user = req.body;
     // console.log(UserData);
     const validData = userValidation.parse(UserData);
-    const result = await UserService.createUserInDB(validData);
+    const user = await UserService.createUserInDB(validData);
+    const data = {
+      userId: user?.userId,
+      username: user?.username,
+      fullName: user?.fullName,
+      age: user?.age,
+      email: user?.email,
+      isActive: user?.isActive,
+      hobbies: user?.hobbies,
+      address: user?.address
+    }
     res.status(200).json({
       success: true,
       message: 'User created successfully',
-      data: result,
+      data: data,
     });
   } catch (err) {
     res.status(500).json({
@@ -52,7 +63,16 @@ const singleUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
     const user = await UserService.singleUserFromDB(userId);
-
+    const data = {
+      userId: user?.userId,
+      username: user?.username,
+      fullName: user?.fullName,
+      age: user?.age,
+      email: user?.email,
+      isActive: user?.isActive,
+      hobbies: user?.hobbies,
+      address: user?.address
+    }
     if (!user)
       return res.status(404).json({
         success: false,
@@ -66,7 +86,7 @@ const singleUser = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'User found successfully',
-      data: user,
+      data: data,
     });
   } catch (error) {
     res.status(500).json({
@@ -79,7 +99,7 @@ const singleUser = async (req: Request, res: Response) => {
 
 const updateOneUser = async (req: Request, res: Response) => {
   try {
-    const { user: update } = req.body;
+    const  update = req.body;
     // console.log(update)
     const updateData = userValidation.parse(update);
 
@@ -97,11 +117,20 @@ const updateOneUser = async (req: Request, res: Response) => {
       });
 
     const updatedUser = await UserService.updateOneUser(userId, updateData);
-
+    const data = {
+      userId: updatedUser?.userId,
+      username: updatedUser?.username,
+      fullName: updatedUser?.fullName,
+      age: updatedUser?.age,
+      email: updatedUser?.email,
+      isActive: updatedUser?.isActive,
+      hobbies: updatedUser?.hobbies,
+      address: updatedUser?.address
+    }
     res.status(200).json({
       success: true,
       message: 'User updated successfully',
-      data: updatedUser,
+      data: data,
     });
   } catch (error) {
     res.status(500).json({
@@ -162,7 +191,7 @@ const doOrder = async (req: Request, res: Response) => {
     await UserService.doOrder(userId, validUserData);
     res.status(201).json({
       success: true,
-      message: 'Order added successfully',
+      message: 'Order created successfully',
       data: null,
     });
   } catch (error) {
@@ -190,10 +219,13 @@ const getOrders = async (req: Request, res: Response) => {
       });
 
     const result = await UserService.getOrders(userId);
+    const data = {
+      orders : result?.orders
+    }
     res.status(200).json({
       success: true,
       message: 'Order retrived successfully',
-      data: result,
+      data: data,
     });
   } catch (error) {
     res.status(500).json({

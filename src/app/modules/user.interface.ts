@@ -27,3 +27,15 @@ export type User = {
   address: Address;
   orders?: Orders[];
 };
+
+export type getUserInfo = {
+  userId: number;
+  username: string;
+  password: string;
+  fullName: FullName;
+  age: number;
+  email: string;
+  isActive: boolean;
+  hobbies: string[];
+  address: Address;
+}
